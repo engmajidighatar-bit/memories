@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f6f4">
+<title>خاطرات ما</title>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=JetBrains+Mono:wght@400;600&family=Vazirmatn:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f6f4;--dot:#dcdcdc;--black:#121212;--white:#fff}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:var(--bg);background-image:radial-gradient(var(--dot) 1.25px,transparent 1.25px);background-size:18px 18px;font-family:'Vazirmatn','JetBrains Mono',sans-serif;color:var(--black);overflow:hidden}
+[hidden]{display:none!important}
+#login{height:100%;display:flex;align-items:center;justify-content:center;padding:24px}
+.box{width:100%;max-width:340px;background:var(--white);border-radius:28px;padding:26px;box-shadow:0 20px 50px rgba(0,0,0,.12)}
+.box h2{font-size:18px;margin-bottom:18px}
+.box input,.box textarea{width:100%;padding:12px;margin-bottom:12px;border:1.5px solid #e0e0e0;border-radius:12px;font:inherit;font-size:14px;outline:none}
+.box input:focus,.box textarea:focus{border-color:var(--black)}
+.box label{display:block;font-size:12px;color:#555;margin-bottom:6px}
+.btn{width:100%;padding:12px;border:0;border-radius:12px;background:var(--black);color:#fff;font:inherit;font-weight:600;cursor:pointer}
+.btn.alt{background:#ececec;color:var(--black);margin-top:8px}
+.err{color:#c0392b;font-size:12px;min-height:18px;margin-bottom:8px}
+#app{position:fixed;inset:0}
+.pill{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:16px;width:56px;height:128px;background:var(--black);border-radius:30px;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:10px 0;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.pill .ic{width:34px;height:34px;border-radius:50%;border:1.5px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.pill .lb{font:600 8px 'JetBrains Mono',monospace;letter-spacing:.8px;opacity:.75}
+.pill .add{width:38px;height:38px;background:#fff;color:var(--black);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;cursor:pointer}
+.node img{width:100%;height:100%;object-fit:cover}
+.track{position:absolute;inset:0;overflow-y:auto;z-index:10;scrollbar-width:none;scroll-snap-type:y proximity;scroll-behavior:smooth;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.track::-webkit-scrollbar{display:none}
+.slot{height:120px;display:flex;align-items:center;justify-content:center;scroll-snap-align:center}
+.node{width:140px;height:140px;border-radius:70px;overflow:hidden;position:relative;cursor:pointer;flex-shrink:0;background:#ddd;will-change:transform;box-shadow:0 8px 22px rgba(0,0,0,.12)}
+.node .play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+.chatbtn{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:58px;height:58px;border-radius:50%;background:var(--black);color:#fff;display:flex;align-items:center;justify-content:center;z-index:50;cursor:pointer;box-shadow:0 10px 26px rgba(0,0,0,.25)}
+.chatbtn i{position:absolute;top:10px;right:10px;width:11px;height:11px;border-radius:50%;background:#ff3b30;border:2px solid var(--black)}
+.chat{position:absolute;inset:0;z-index:70;background:var(--bg);display:flex;flex-direction:column}
+.chathead{display:flex;justify-content:space-between;align-items:center;padding:calc(16px + env(safe-area-inset-top,0px)) 20px 12px;font-weight:600;font-size:16px;border-bottom:1px solid #e6e6e2}
+.chathead .x{cursor:pointer;font-size:20px;padding:4px 8px}
+.msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:78%;align-self:flex-end;background:#fff;border-radius:18px;padding:9px 14px;font-size:14px;line-height:1.7;box-shadow:0 2px 8px rgba(0,0,0,.06);word-break:break-word;white-space:pre-wrap}
+.msg.me{align-self:flex-start;background:var(--black);color:#fff}
+.msg small{display:block;font-size:10px;opacity:.55;margin-top:2px}
+.chatform{display:flex;gap:8px;padding:10px 14px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid #e6e6e2;background:var(--bg)}
+.chatform input{flex:1;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:22px;font:inherit;font-size:14px;outline:none;background:#fff}
+.chatform button{border:0;border-radius:22px;background:var(--black);color:#fff;font:inherit;font-weight:600;padding:0 18px;cursor:pointer}
+.empty{font-size:14px;color:#777;text-align:center;line-height:2;padding:0 70px}
+.ov{position:absolute;inset:0;z-index:60;background:#000;opacity:0;pointer-events:none;transition:opacity .45s}
+.ov.open{opacity:1;pointer-events:auto}
+.ov .media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.85)}
+.ov video.media{object-fit:contain;filter:none;background:#000}
+.hud{position:absolute;inset:0;color:#fff;padding:calc(20px + env(safe-area-inset-top,0px)) 24px 40px;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none;background:linear-gradient(to bottom,rgba(0,0,0,.4),transparent 30%,transparent 55%,rgba(0,0,0,.65))}
+.hud .close{pointer-events:auto;font-size:22px;letter-spacing:3px;cursor:pointer;align-self:flex-start;direction:ltr;padding:6px 0}
+.hud h3{font-size:21px;line-height:1.5;margin-top:8px;text-shadow:0 2px 10px rgba(0,0,0,.4)}
+.hud .foot{font-size:13px;line-height:1.9;opacity:.92}
+.hud .cnt{font:46px 'DotGothic16',monospace;letter-spacing:3px;direction:ltr;text-align:right;margin-bottom:6px}
+.ov.vid .hud .foot,.ov.vid .hud .cnt{margin-bottom:60px}
+.modal{position:absolute;inset:0;z-index:90;background:rgba(0,0,0,.65);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px}
+.prog{height:6px;background:#eee;border-radius:3px;overflow:hidden;margin:6px 0 12px}
+.prog i{display:block;height:100%;width:0;background:var(--black);transition:width .2s}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <form class="box" id="loginForm">
+    <h2>خاطرات ما</h2>
+    <input id="u" placeholder="نام کاربری" autocomplete="username" required>
+    <input id="p" type="password" placeholder="رمز عبور" autocomplete="current-password" required>
+    <div class="err" id="loginErr"></div>
+    <button class="btn" type="submit">ورود</button>
+  </form>
+</div>
+
+<div id="app" hidden>
+  <div class="pill">
+    <div class="ic" id="delBtn" title="حذف خاطره">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+    </div>
+    <span class="lb">MEMORIES</span>
+    <div class="add" id="addBtn" title="خاطره جدید">+</div>
+  </div>
+
+  <div class="track" id="track"></div>
+
+  <div class="ov" id="ov">
+    <div id="mediaBox"></div>
+    <div class="hud">
+      <div>
+        <div class="close" id="closeBtn">⋮⋮</div>
+        <h3 id="ovTitle"></h3>
+      </div>
+      <div>
+        <div class="cnt" id="ovCnt"></div>
+        <div class="foot" id="ovFoot"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chatbtn" id="chatBtn" title="چت">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 12a8 8 0 01-11.5 7.2L4 20l1-4.5A8 8 0 1121 12z"/></svg>
+    <i id="chatBadge" hidden></i>
+  </div>
+
+  <div class="chat" id="chat" hidden>
+    <div class="chathead"><span>چت</span><span class="x" id="chatClose">✕</span></div>
+    <div class="msgs" id="msgs"></div>
+    <form class="chatform" id="chatForm"><input id="chatIn" placeholder="پیام..." autocomplete="off"><button>ارسال</button></form>
+  </div>
+
+  <div class="modal" id="modal" hidden>
+    <div class="box">
+      <h2>ثبت خاطره جدید</h2>
+      <label>عنوان</label>
+      <input id="mTitle" placeholder="مثلاً: اولین سفر ما">
+      <label>توضیحات</label>
+      <textarea id="mDesc" rows="3" placeholder="چی یادت مونده از اون لحظه؟"></textarea>
+      <label>عکس یا فیلم</label>
+      <input type="file" id="mFile" accept="image/*,video/*">
+      <div class="prog" id="prog" hidden><i id="progBar"></i></div>
+      <div class="err" id="mErr"></div>
+      <button class="btn" id="saveBtn">ذخیره خاطره</button>
+      <button class="btn alt" id="cancelBtn">انصراف</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-auth-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.js"></script>
+<script>
+// ---- تنظیمات ----
+const CLOUD = "fily0hgg";
+const PRESET = "Majidi memorie";   // اسم Upload preset در Cloudinary (باید دقیقاً همین باشد)
+firebase.initializeApp({
+  apiKey: "AIzaSyAAuT2LaIc-ctnfODqZhAbPA2xN1gMPH-k",
+  authDomain: "majidi-13509.firebaseapp.com",
+  projectId: "majidi-13509",
+  storageBucket: "majidi-13509.firebasestorage.app",
+  messagingSenderId: "863888307062",
+  appId: "1:863888307062:web:6e0ad868f9169717448057"
+});
+const auth = firebase.auth(), db = firebase.firestore();
+const NAMES = { "محمدرضا": "mohammadreza", "رضوان": "rezvan" };
+const $ = id => document.getElementById(id);
+
+let mem = [], active = 0, unsub = null, goLast = false;
+
+// ---- ورود ----
+const toEmail = n => { n = n.trim().toLowerCase(); return n.includes("@") ? n : (NAMES[n] || n) + "@memories.app"; };
+$("loginForm").addEventListener("submit", e => {
+  e.preventDefault();
+  $("loginErr").textContent = "";
+  auth.signInWithEmailAndPassword(toEmail($("u").value), $("p").value)
+    .catch(e => {
+      const wrong = ["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found", "auth/invalid-email"].includes(e.code);
+      $("loginErr").textContent = (wrong ? "نام کاربری یا رمز اشتباه است." : "خطا: ") + (wrong ? "" : e.code || e.message);
+    });
+});
+auth.onAuthStateChanged(user => {
+  $("login").hidden = !!user;
+  $("app").hidden = !user;
+  if (unsub) { unsub(); unsub = null; }
+  if (!user) { mem = []; return; }
+  unsub = db.collection("memories").orderBy("date").onSnapshot(s => {
+    mem = s.docs.map(d => ({ id: d.id, ...d.data({ serverTimestamps: "estimate" }) }));
+    if (goLast) { active = mem.length - 1; goLast = false; }
+    render();
+  }, () => { $("track").innerHTML = '<div class="empty">دسترسی ندارید. قوانین Firestore را بررسی کنید.</div>'; });
+});
+
+// ---- نمایش ----
+const thumb = m => {
+  if (m.type === "video") return m.url.replace("/upload/", "/upload/so_0,w_400,h_400,c_fill/").replace(/\.[^./]+$/, ".jpg");
+  return m.url.replace("/upload/", "/upload/w_400,h_400,c_fill,q_auto/");
+};
+const SLOT = 120;
+function layout() {
+  const tr = $("track"), nodes = tr.querySelectorAll(".node");
+  if (!nodes.length) return;
+  const st = tr.scrollTop;
+  active = Math.max(0, Math.min(mem.length - 1, Math.round(st / SLOT)));
+  nodes.forEach((n, i) => {
+    const t = Math.max(0, 1 - Math.abs(i * SLOT - st) / 130);
+    n.style.transform = `scale(${0.57 + 0.43 * t})`;
+    n.style.borderRadius = (70 - 44 * t) + "px";
+    n.style.opacity = 0.6 + 0.4 * t;
+  });
+}
+let raf;
+$("track").addEventListener("scroll", () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(layout); }, { passive: true });
+function render() {
+  const tr = $("track");
+  tr.innerHTML = "";
+  tr.style.padding = Math.max(0, tr.clientHeight / 2 - SLOT / 2) + "px 0";
+  if (!mem.length) {
+    tr.innerHTML = '<div class="empty">هنوز خاطره‌ای نیست.<br>با دکمه + اولین خاطره را بگذارید.</div>';
+    closeView(); return;
+  }
+  active = Math.min(active, mem.length - 1);
+  mem.forEach((m, i) => {
+    const slot = document.createElement("div");
+    slot.className = "slot";
+    const n = document.createElement("div");
+    n.className = "node";
+    n.innerHTML = `<img src="${thumb(m)}" alt="">` + (m.type === "video" ? '<div class="play">▶</div>' : "");
+    n.onclick = () => { if (i === active) openView(); else tr.scrollTo({ top: i * SLOT }); };
+    slot.appendChild(n);
+    tr.appendChild(slot);
+  });
+  tr.style.scrollBehavior = "auto";
+  tr.scrollTop = active * SLOT;
+  tr.style.scrollBehavior = "";
+  layout();
+  if ($("ov").classList.contains("open")) fillView();
+}
+function fillView() {
+  const m = mem[active]; if (!m) return;
+  $("mediaBox").innerHTML = m.type === "video"
+    ? `<video class="media" src="${m.url}" controls playsinline autoplay></video>`
+    : `<img class="media" src="${m.url.replace("/upload/", "/upload/q_auto/")}" alt="">`;
+  $("ov").classList.toggle("vid", m.type === "video");
+  $("ovTitle").textContent = m.title;
+  const d = m.date && m.date.toDate ? m.date.toDate().toLocaleDateString("fa-IR") : "";
+  $("ovFoot").textContent = [m.desc, d, m.by ? "ثبت‌شده توسط " + m.by : ""].filter(Boolean).join("\n");
+  $("ovFoot").style.whiteSpace = "pre-line";
+  $("ovCnt").textContent = "+" + String(active + 1).padStart(2, "0");
+}
+function openView() { if (!mem.length) return; fillView(); $("ov").classList.add("open"); }
+function closeView() { $("ov").classList.remove("open"); $("mediaBox").innerHTML = ""; }
+$("closeBtn").onclick = closeView;
+
+// ---- چت ----
+let chatUnsub = null, msgs = [];
+const myId = () => auth.currentUser && auth.currentUser.uid;
+const ms = m => (m.date && m.date.toMillis ? m.date.toMillis() : Date.now());
+const seen = () => { try { return +localStorage.getItem("chatSeen") || 0; } catch (e) { return 0; } };
+const markSeen = () => { try { localStorage.setItem("chatSeen", Date.now()); } catch (e) {} $("chatBadge").hidden = true; };
+function renderChat() {
+  const box = $("msgs"); box.innerHTML = "";
+  msgs.forEach(m => {
+    const mine = m.uid === myId(), d = document.createElement("div");
+    d.className = "msg" + (mine ? " me" : "");
+    const t = m.date && m.date.toDate ? m.date.toDate().toLocaleTimeString("fa-IR", { hour: "2-digit", minute: "2-digit" }) : "";
+    d.innerHTML = "<span></span><small></small>";
+    d.firstChild.textContent = m.text;
+    d.lastChild.textContent = (mine ? "" : m.by + " · ") + t;
+    box.appendChild(d);
+  });
+  box.scrollTop = box.scrollHeight;
+  if (!$("chat").hidden) markSeen();
+  else $("chatBadge").hidden = !msgs.some(m => m.uid !== myId() && ms(m) > seen());
+}
+auth.onAuthStateChanged(user => {
+  if (chatUnsub) { chatUnsub(); chatUnsub = null; }
+  if (!user) { msgs = []; $("chat").hidden = true; return; }
+  chatUnsub = db.collection("chat").orderBy("date").limitToLast(200).onSnapshot(s => {
+    msgs = s.docs.map(d => d.data({ serverTimestamps: "estimate" }));
+    renderChat();
+  });
+});
+$("chatBtn").onclick = () => { $("chat").hidden = false; renderChat(); setTimeout(() => $("chatIn").focus(), 50); };
+$("chatClose").onclick = () => { $("chat").hidden = true; };
+$("chatForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const t = $("chatIn").value.trim(); if (!t) return;
+  $("chatIn").value = "";
+  const me = (auth.currentUser.email || "").split("@")[0];
+  db.collection("chat").add({ text: t, uid: myId(), by: me === "rezvan" ? "رضوان" : "محمدرضا", date: firebase.firestore.FieldValue.serverTimestamp() });
+});
+
+// ---- حذف ----
+$("delBtn").onclick = async () => {
+  const m = mem[active]; if (!m) return;
+  if (!confirm("این خاطره حذف شود؟")) return;
+  await db.collection("memories").doc(m.id).delete();
+  active = Math.max(0, active - 1);
+};
+
+// ---- افزودن ----
+$("addBtn").onclick = () => { $("mErr").textContent = ""; $("modal").hidden = false; };
+$("cancelBtn").onclick = () => { $("modal").hidden = true; };
+function upload(file, onProg) {
+  return new Promise((ok, fail) => {
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("upload_preset", PRESET);
+    const x = new XMLHttpRequest();
+    x.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD}/auto/upload`);
+    x.upload.onprogress = e => e.lengthComputable && onProg(e.loaded / e.total);
+    x.onload = () => {
+      let r = {}; try { r = JSON.parse(x.responseText); } catch (e) {}
+      x.status === 200 ? ok(r) : fail(new Error((r.error && r.error.message) || "خطا در آپلود"));
+    };
+    x.onerror = () => fail(new Error("اینترنت قطع است."));
+    x.send(fd);
+  });
+}
+$("saveBtn").onclick = async () => {
+  const f = $("mFile").files[0], err = $("mErr");
+  err.textContent = "";
+  if (!f) { err.textContent = "یک عکس یا فیلم انتخاب کنید."; return; }
+  const isVid = f.type.startsWith("video/");
+  if (f.size > (isVid ? 100 : 10) * 1048576) { err.textContent = isVid ? "فیلم باید کمتر از ۱۰۰ مگابایت باشد." : "عکس باید کمتر از ۱۰ مگابایت باشد."; return; }
+  $("saveBtn").disabled = true; $("prog").hidden = false;
+  try {
+    const r = await upload(f, p => $("progBar").style.width = Math.round(p * 100) + "%");
+    const me = (auth.currentUser.email || "").split("@")[0];
+    goLast = true;
+    await db.collection("memories").add({
+      title: $("mTitle").value.trim() || "خاطره بدون عنوان",
+      desc: $("mDesc").value.trim(),
+      url: r.secure_url,
+      type: r.resource_type === "video" ? "video" : "image",
+      by: me === "rezvan" ? "رضوان" : "محمدرضا",
+      date: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    $("mTitle").value = $("mDesc").value = $("mFile").value = "";
+    $("modal").hidden = true;
+  } catch (e) { err.textContent = e.message; }
+  $("saveBtn").disabled = false; $("prog").hidden = true; $("progBar").style.width = "0";
+};
+</script>
+</body>
+</html>
